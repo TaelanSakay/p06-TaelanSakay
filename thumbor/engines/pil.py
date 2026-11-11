@@ -277,6 +277,14 @@ class Engine(BaseEngine):
                     else None
                 )
                 self.image = self.image.quantize(method=quantize_method)
+                palette = self.image.getpalette("RGBA") or []
+                transparent = [
+                    index
+                    for index, alpha in enumerate(palette[3::4])
+                    if alpha == 0
+                ]
+                if transparent:
+                    self.image.info["transparency"] = transparent[0]
 
         ext = requested_extension or self.get_default_extension()
 
